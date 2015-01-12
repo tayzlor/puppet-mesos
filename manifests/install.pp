@@ -11,7 +11,7 @@
 #
 class mesos::install(
   $ensure      = $mesos::ensure,
-  $repo_source = undef,
+  $manage_repo = $mesos::manage_repo,
 ) {
   # 'ensure_packages' requires puppetlabs/stdlib
   #
@@ -22,15 +22,18 @@ class mesos::install(
   # TODO: make this optional
   ensure_packages(['python'])
 
-  class {'mesos::repo':
-    source => $repo_source,
-  }
-
   # a debian (or other binary package) must be available,
   # see https://github.com/deric/mesos-deb-packaging
   # for Debian packaging
-  package { 'mesos':
-    ensure  => $ensure,
-    require => Class['mesos::repo']
+  if ($manage_repo == true) {
+    class {'mesos::repo': }->
+    package { 'mesos':
+      ensure  => $ensure,
+    }
+  }
+  else {
+    package { 'mesos':
+      ensure  => $ensure
+    }
   }
 }

@@ -34,7 +34,7 @@ class mesos(
   $group          = 'root',
   # could be a fact like $::ipaddress or explicit ip address
   $listen_address = undef,
-  $repo           = undef,
+  $manage_repo    = true,
   $env_var        = {},
   $ulimit         = 8192,
 ) {
@@ -47,7 +47,7 @@ class mesos(
 
   class {'mesos::install':
     ensure      => $mesos_ensure,
-    repo_source => $repo,
+    manage_repo => $manage_repo,
   }
 
   class {'mesos::config':
